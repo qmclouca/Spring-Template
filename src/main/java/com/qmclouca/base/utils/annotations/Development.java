@@ -1,4 +1,4 @@
-package com.qmclouca.base.annotations;
+package com.qmclouca.base.utils.annotations;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

@@ -1,8 +1,8 @@
-package com.qmclouca.base.configuration;
+package com.qmclouca.base.configs;
 
-import com.qmclouca.base.annotations.Development;
-import com.qmclouca.base.annotations.Homologation;
-import com.qmclouca.base.annotations.Production;
+import com.qmclouca.base.utils.annotations.Development;
+import com.qmclouca.base.utils.annotations.Homologation;
+import com.qmclouca.base.utils.annotations.Production;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
