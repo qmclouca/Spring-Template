@@ -33,7 +33,7 @@ public class ClientController {
     }
 
     @Operation(summary = "Atualiza um cliente existente")
-    @GetMapping
+    @GetMapping("/{nome}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Client> getClienteByNome(@RequestParam String nome) {
         if (nome == null || nome.trim().isEmpty()) {
