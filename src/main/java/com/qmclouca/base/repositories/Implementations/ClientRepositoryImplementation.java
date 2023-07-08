@@ -2,6 +2,8 @@ package com.qmclouca.base.repositories.Implementations;
 
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.repositories.ClientRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +17,16 @@ import java.util.function.Function;
 @Repository
 public class ClientRepositoryImplementation implements ClientRepository {
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public Client findClientsByLastName(String name) {
-        return null;
+        String query = "SELECT c FROM Client c WHERE c.lastName = :name";
+        return entityManager.createQuery(query, Client.class)
+                .setParameter("name", name)
+                .getSingleResult();
     }
-
     @Override
     public void flush() {
 
