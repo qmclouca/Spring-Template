@@ -1,37 +1,34 @@
 package com.qmclouca.base.controllers;
 
 import com.qmclouca.base.models.Client;
-import com.qmclouca.base.repositories.ClientRepository;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import com.qmclouca.base.services.Implementations.ClientServiceImplementation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @RestController
-@ComponentScan
 @RequestMapping("/api/clients")
 public class ClientController {
-    private final ClientRepository clientRepository;
 
     @Autowired
-    public ClientController(ClientRepository clientRepository){
-        this.clientRepository = clientRepository;
-    }
+    private ClientServiceImplementation clientService;
 
-    @Operation(summary = "Criar um novo cliente.")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Client save(@RequestBody Client client){
-        return clientRepository.save(client);
-    }
+    public ResponseEntity<Client> save(@RequestBody Client client){
+        Client returnClient = clientService.createClient(client);
 
+        if (returnClient != null) {
+            return ResponseEntity.ok(returnClient); // Return the client with 200 OK status
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Return 400 Bad Request status
+        }
+    }
+    /*
     @Operation(summary = "Atualiza um cliente existente")
     @GetMapping("/{nome}")
     @ResponseStatus(HttpStatus.OK)
@@ -40,7 +37,7 @@ public class ClientController {
             throw new IllegalArgumentException("O nome do cliente não pode ser nulo ou vazio");
         }
 
-        Client client = clientRepository.findClientsByLastName(nome);
+        Client client = clientService.findClientsByName(nome);
         if (client == null) {
             return ResponseEntity.notFound().build();
         }
@@ -67,4 +64,6 @@ public class ClientController {
     public void delete(@PathVariable Integer id) {
         clientRepository.deleteById(id);
     }
+
+     */
 }
