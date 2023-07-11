@@ -1,7 +1,9 @@
 package com.qmclouca.base;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(scanBasePackages = {
 		"com.qmclouca.base.models",
@@ -10,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		"com.qmclouca.base.services.Implementations"
 })
 public class BaseApplication {
+	@Bean
+	public ModelMapper modelMapper() { return new ModelMapper(); }
 	public static void main(String[] args) {
 		SpringApplication.run(BaseApplication.class, args);
 	}

@@ -1,9 +1,10 @@
 package com.qmclouca.base.controllers;
 
+import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.models.Client;
+import com.qmclouca.base.services.ClientService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import com.qmclouca.base.services.Implementations.ClientServiceImplementation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,25 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
 
     @Autowired
-    private ClientServiceImplementation clientService;
+    private ModelMapper modelMapper;
+
+    private final ClientService clientService;
+
+    public ClientController(ClientService clientService){
+        super();
+        this.clientService = clientService;
+    }
 
     @PostMapping
-    public ResponseEntity<Client> save(@RequestBody Client client){
-        Client returnClient = clientService.createClient(client);
+    public ResponseEntity<ClientDto> save(@RequestBody ClientDto postClientDto){
 
-        if (returnClient != null) {
-            return ResponseEntity.ok(returnClient); // Return the client with 200 OK status
+        Client clientRequest = modelMapper.map(postClientDto, Client.class);
+        Client client = clientService.createClient(clientRequest);
+
+        ClientDto postClientResponse = modelMapper.map(client, ClientDto.class);
+
+        if (postClientResponse != null) {
+            return ResponseEntity.ok(postClientResponse); // Return the client with 200 OK status
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Return 400 Bad Request status
         }

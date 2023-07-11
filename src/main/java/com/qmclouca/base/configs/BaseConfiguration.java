@@ -3,6 +3,7 @@ package com.qmclouca.base.configs;
 import com.qmclouca.base.utils.annotations.Development;
 import com.qmclouca.base.utils.annotations.Homologation;
 import com.qmclouca.base.utils.annotations.Production;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,4 +26,5 @@ public class BaseConfiguration {
     public CommandLineRunner executePRD(){
         return args -> System.out.println("Rodando em PRD");
     }
+
 }
