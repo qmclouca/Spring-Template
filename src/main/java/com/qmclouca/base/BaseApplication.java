@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 public class BaseApplication {
 	@Bean
 	public ModelMapper modelMapper() { return new ModelMapper(); }
+
 	public static void main(String[] args) {
 		SpringApplication.run(BaseApplication.class, args);
 	}
