@@ -1,13 +1,14 @@
 package com.qmclouca.base.Dtos;
 
-import com.qmclouca.base.models.Address;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ClientDto extends BaseDto {
+public class ClientDto extends BaseEntityDto {
 
     private String firstName;
     private String middleName;
@@ -15,5 +16,5 @@ public class ClientDto extends BaseDto {
     private LocalDate birthDate;
     private String mobile;
     private String email;
-    private List<Address> address;
+    private List<AddressDto> address;
 }

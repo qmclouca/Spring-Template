@@ -14,7 +14,6 @@ public class ClientServiceImplementation implements ClientService {
 
     private final ClientRepository clientRepository;
 
-    @Autowired
     public ClientServiceImplementation(ClientRepository clientRepository){
         this.clientRepository = clientRepository;
     }
@@ -24,23 +23,4 @@ public class ClientServiceImplementation implements ClientService {
         return clientRepository.save(client);
     }
 
-    @Override
-    public void deleteClient(Integer id) {
-
-    }
-
-    @Override
-    public void update(Integer id, Client client) {
-
-    }
-
-    @Override
-    public Collection<Client> getClients() {
-        return null;
-    }
-
-    @Override
-    public Client getCLientByName() {
-        return null;
-    }
 }
