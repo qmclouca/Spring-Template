@@ -22,14 +22,9 @@ public class ClientRepositoryImplementation implements ClientRepository {
 
     public List<Client> getClientsByName(String name) {
 
-        String[] splitName = name.split(" ");
-        String firstName = splitName[0];
-        String lastName = splitName[splitName.length-1];
-
-        String query = "SELECT c FROM Client c WHERE c.firstName = :firstname or c.lastName = :lastName";
+        String query = "SELECT c FROM Client c WHERE c.name LIKE CONCAT('%', :name, '%')";
         return entityManager.createQuery(query, Client.class)
-                .setParameter("firstName", firstName)
-                .setParameter("lastName", lastName)
+                .setParameter("name", name)
                 .getResultList();
     }
     @Override

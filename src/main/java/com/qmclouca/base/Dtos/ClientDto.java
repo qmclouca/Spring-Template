@@ -10,9 +10,7 @@ import java.util.List;
 @Data
 public class ClientDto extends BaseEntityDto {
 
-    private String firstName;
-    private String middleName;
-    private String lastName;
+    private String name;
     private LocalDate birthDate;
     private String mobile;
     private String email;

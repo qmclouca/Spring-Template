@@ -15,11 +15,7 @@ import java.util.List;
 public class Client extends BaseEntity{
 
     @Column
-    private String firstName;
-    @Column
-    private String middleName;
-    @Column
-    private String lastName;
+    private String name;
     @Column
     private LocalDate birthDate;
     @Column
