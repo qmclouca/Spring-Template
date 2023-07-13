@@ -3,11 +3,8 @@ package com.qmclouca.base.services.Implementations;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.repositories.ClientRepository;
 import com.qmclouca.base.services.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ClientServiceImplementation implements ClientService {
@@ -23,4 +20,7 @@ public class ClientServiceImplementation implements ClientService {
         return clientRepository.save(client);
     }
 
+    public List<Client> getClientsByName(String name) {
+        return clientRepository.getClientsByName(name);
+    }
 }

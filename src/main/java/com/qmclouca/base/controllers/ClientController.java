@@ -1,15 +1,21 @@
 package com.qmclouca.base.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.List;
+
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 @Controller
 @RestController
@@ -40,6 +46,32 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Return 400 Bad Request status
         }
     }
+
+
+    @GetMapping("{name}")
+    public ResponseEntity<String> getClientsByName(@PathVariable String name) {
+        if (name == null || name.isEmpty()) {
+            return ResponseEntity.badRequest().body("O nome do cliente não pode ser nulo ou vazio");
+        }
+
+        List<Client> clients = clientService.getClientsByName(name);
+        if(clients.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String json = objectMapper.writeValueAsString(clients);
+            return ResponseEntity.ok(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Erro ao processar o JSON");
+        }
+    }
+
+
+
     /*
     @Operation(summary = "Atualiza um cliente existente")
     @GetMapping("/{nome}")

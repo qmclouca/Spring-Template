@@ -20,12 +20,17 @@ public class ClientRepositoryImplementation implements ClientRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    public Client findClientsByLastName(String name) {
-        String query = "SELECT c FROM Client c WHERE c.lastName = :name";
+    public List<Client> getClientsByName(String name) {
+
+        String[] splitName = name.split(" ");
+        String firstName = splitName[0];
+        String lastName = splitName[splitName.length-1];
+
+        String query = "SELECT c FROM Client c WHERE c.firstName = :firstname or c.lastName = :lastName";
         return entityManager.createQuery(query, Client.class)
-                .setParameter("name", name)
-                .getSingleResult();
+                .setParameter("firstName", firstName)
+                .setParameter("lastName", lastName)
+                .getResultList();
     }
     @Override
     public void flush() {
