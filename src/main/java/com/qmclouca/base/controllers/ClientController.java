@@ -27,6 +27,9 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     public ClientController(ClientService clientService){
         super();
         this.clientService = clientService;
@@ -47,7 +50,6 @@ public class ClientController {
         }
     }
 
-
     @GetMapping("{name}")
     public ResponseEntity<String> getClientsByName(@PathVariable String name) {
         if (name == null || name.isEmpty()) {
@@ -55,23 +57,19 @@ public class ClientController {
         }
 
         List<Client> clients = clientService.getClientsByName(name);
-        if(clients.isEmpty()){
-            return ResponseEntity.notFound().build();
+        if (clients.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum cliente encontrado com o nome fornecido");
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
+        String json = "";
         try {
-            String json = objectMapper.writeValueAsString(clients);
+            json = objectMapper.writeValueAsString(clients);
             return ResponseEntity.ok(json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Erro ao processar o JSON");
         }
     }
-
-
-
     /*
     @Operation(summary = "Atualiza um cliente existente")
     @GetMapping("/{nome}")
