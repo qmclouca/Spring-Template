@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
 @Controller
 @RestController
@@ -61,7 +60,7 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum cliente encontrado com o nome fornecido");
         }
 
-        String json = "";
+        String json;
         try {
             json = objectMapper.writeValueAsString(clients);
             return ResponseEntity.ok(json);
