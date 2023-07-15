@@ -21,8 +21,7 @@ public class ClientRepositoryImplementation implements ClientRepository {
     private EntityManager entityManager;
 
     public List<Client> getClientsByName(String name) {
-
-        String query = "SELECT c FROM Client c WHERE c.name LIKE CONCAT('%', :name, '%')";
+        String query = "SELECT c FROM Client c WHERE LOWER(c.name) LIKE CONCAT('%', LOWER(:name), '%')";
         return entityManager.createQuery(query, Client.class)
                 .setParameter("name", name)
                 .getResultList();
