@@ -7,5 +7,5 @@ import java.util.List;
 public interface ClientService {
     public abstract Client createClient(Client client);
     public abstract List<Client> getClientsByName(String name);
-
+    public abstract List<Client> getAllClients();
 }

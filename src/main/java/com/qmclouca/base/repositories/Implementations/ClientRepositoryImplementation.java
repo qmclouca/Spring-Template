@@ -26,6 +26,7 @@ public class ClientRepositoryImplementation implements ClientRepository {
                 .setParameter("name", name)
                 .getResultList();
     }
+
     @Override
     public void flush() {
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
@@ -38,6 +38,10 @@ public class ClientController {
     public ResponseEntity<ClientDto> save(@RequestBody ClientDto postClientDto){
 
         Client clientRequest = modelMapper.map(postClientDto, Client.class);
+        if (clientService.getClientsByName(clientRequest.getName()) != null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         Client client = clientService.createClient(clientRequest);
 
         ClientDto postClientResponse = modelMapper.map(client, ClientDto.class);
@@ -69,42 +73,34 @@ public class ClientController {
             return ResponseEntity.badRequest().body("Erro ao processar o JSON");
         }
     }
-    /*
-    @Operation(summary = "Atualiza um cliente existente")
-    @GetMapping("/{nome}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Client> getClienteByNome(@RequestParam String nome) {
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do cliente não pode ser nulo ou vazio");
-        }
 
-        Client client = clientService.findClientsByName(nome);
-        if (client == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping
+    public ResponseEntity<String> getAllClients(){
+        List<Client> clients = clientService.getAllClients();
+        if (clients.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum cliente encontrado.");
         }
-        return ResponseEntity.ok(client);
+        List<ClientDto> clientDtos = clients.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(clientDtos);
+            return ResponseEntity.ok(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Erro ao processar o JSON");
+        }
     }
 
-    @Operation(summary = "Retorna um cliente pelo seu id")
-    @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Optional<Client>> getClienteById(@PathVariable Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("O id do cliente não pode ser nulo");
-        }
-        Optional<Client> client = clientRepository.findById(id);
-        if (client.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(client);
+    private ClientDto convertToDto(Client client) {
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(client.getId());
+        clientDto.setName(client.getName());
+        return clientDto;
     }
 
-    @Operation(summary="Deleta um cliente pelo seu id")
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
-        clientRepository.deleteById(id);
-    }
 
-     */
+
 }

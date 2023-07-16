@@ -23,4 +23,8 @@ public class ClientServiceImplementation implements ClientService {
     public List<Client> getClientsByName(String name) {
         return clientRepository.getClientsByName(name);
     }
+
+    public List<Client> getAllClients(){
+        return clientRepository.findAll();
+    }
 }
