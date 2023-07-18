@@ -38,4 +38,13 @@ public class ClientServiceImplementation implements ClientService {
             return false;
         }
     }
+    public boolean deleteClient(Long id){
+        Optional<Client> client = clientRepository.getClientById(id);
+        if (client.isPresent()){
+            clientRepository.delete(client.orElse(new Client()));
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -3,7 +3,9 @@ package com.qmclouca.base.repositories.Implementations;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.repositories.ClientRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +41,20 @@ public class ClientRepositoryImplementation implements ClientRepository {
             return Optional.empty();
         }
     }
+
+    public Optional<Client> getClientById(Long id) {
+        String query = "SELECT c FROM Client c WHERE c.id = :id"; // Use 'c.id' instead of 'c.client_id'
+        TypedQuery<Client> typedQuery = entityManager.createQuery(query, Client.class)
+                .setParameter("id", id);
+
+        try {
+            Client result = typedQuery.getSingleResult();
+            return Optional.of(result);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
 
     @Override
     public void delete(Client entity) {

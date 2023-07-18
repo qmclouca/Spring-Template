@@ -9,5 +9,6 @@ public interface ClientService {
     List<Client> getClientsByName(String name);
     List<Client> getAllClients();
     boolean deleteClient(String name);
-    //boolean deleteClient(Long clientId);
+    boolean deleteClient(Long id);
+
 }

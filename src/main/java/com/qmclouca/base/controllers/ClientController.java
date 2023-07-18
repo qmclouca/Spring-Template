@@ -94,9 +94,15 @@ public class ClientController {
         }
     }
 
-    @DeleteMapping("{name}")
+    @DeleteMapping("deleteByName/{name}")
     public ResponseEntity<Boolean> deleteClient(@PathVariable String name){
         boolean isDeleted =  clientService.deleteClient(name);
+        return ResponseEntity.ok(isDeleted);
+    }
+
+    @DeleteMapping("deleteById/{id}")
+    public ResponseEntity<Boolean> deleteClient(@PathVariable Long id){
+        boolean isDeleted = clientService.deleteClient(id);
         return ResponseEntity.ok(isDeleted);
     }
 
