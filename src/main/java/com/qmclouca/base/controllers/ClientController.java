@@ -94,6 +94,12 @@ public class ClientController {
         }
     }
 
+    @DeleteMapping("{name}")
+    public ResponseEntity<Boolean> deleteClient(@PathVariable String name){
+        boolean isDeleted =  clientService.deleteClient(name);
+        return ResponseEntity.ok(isDeleted);
+    }
+
     private ClientDto convertToDto(Client client) {
         ClientDto clientDto = new ClientDto();
         clientDto.setId(client.getId());

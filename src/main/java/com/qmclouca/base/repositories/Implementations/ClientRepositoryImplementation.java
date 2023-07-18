@@ -27,6 +27,26 @@ public class ClientRepositoryImplementation implements ClientRepository {
                 .getResultList();
     }
 
+    public Optional<Client> getClientByName(String name){
+        String query = "SELECT c FROM Client c WHERE LOWER(c.name) = LOWER(:name)";
+
+        Client result = entityManager.createQuery(query, Client.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        if (result != null){
+            return Optional.of(result);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void delete(Client entity) {
+
+    }
+
+
+
     @Override
     public void flush() {
 
@@ -122,10 +142,7 @@ public class ClientRepositoryImplementation implements ClientRepository {
 
     }
 
-    @Override
-    public void delete(Client entity) {
 
-    }
 
     @Override
     public void deleteAllById(Iterable<? extends Integer> integers) {

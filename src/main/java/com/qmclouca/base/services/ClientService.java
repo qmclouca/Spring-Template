@@ -8,4 +8,6 @@ public interface ClientService {
     Client createClient(Client client);
     List<Client> getClientsByName(String name);
     List<Client> getAllClients();
+    boolean deleteClient(String name);
+    //boolean deleteClient(Long clientId);
 }
