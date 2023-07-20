@@ -29,6 +29,10 @@ public class ClientServiceImplementation implements ClientService {
         return clientRepository.findAll();
     }
 
+    public Optional<Client> getCLientByName(String name){
+        return clientRepository.getClientByName(name);
+    }
+
     public boolean deleteClient(String name){
         Optional<Client> client = clientRepository.getClientByName(name);
         if (client.isPresent()){
@@ -46,5 +50,9 @@ public class ClientServiceImplementation implements ClientService {
         } else {
             return false;
         }
+    }
+
+    public Client saveClient(Client client){
+        return clientRepository.save(client);
     }
 }

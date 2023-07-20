@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.models.Client;
@@ -106,13 +107,30 @@ public class ClientController {
         return ResponseEntity.ok(isDeleted);
     }
 
+    @PutMapping("/{name}")
+    public ResponseEntity<String> updateClientByName(@PathVariable String name, @RequestBody Client updatedClient) {
+        Optional<Client> client = clientService.getCLientByName(name);
+
+        if (client.isPresent()) {
+            Client existingClient = client.get();
+            existingClient.setName(updatedClient.getName());
+            existingClient.setBirthDate(updatedClient.getBirthDate());
+            existingClient.setMobile(updatedClient.getMobile());
+            existingClient.setEmail(updatedClient.getEmail());
+
+            // Save the updated client
+            clientService.saveClient(existingClient);
+
+            return ResponseEntity.ok("Client updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     private ClientDto convertToDto(Client client) {
         ClientDto clientDto = new ClientDto();
         clientDto.setId(client.getId());
         clientDto.setName(client.getName());
         return clientDto;
     }
-
-
-
 }
