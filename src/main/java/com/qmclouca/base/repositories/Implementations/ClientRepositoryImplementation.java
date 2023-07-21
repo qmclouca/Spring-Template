@@ -32,11 +32,12 @@ public class ClientRepositoryImplementation implements ClientRepository {
     public Optional<Client> getClientByName(String name){
         String query = "SELECT c FROM Client c WHERE LOWER(c.name) = LOWER(:name)";
 
-        Client result = entityManager.createQuery(query, Client.class)
+        List<Client> result = entityManager.createQuery(query, Client.class)
                 .setParameter("name", name)
-                .getSingleResult();
+                .setMaxResults(1)
+                .getResultList();
         if (result != null){
-            return Optional.of(result);
+            return Optional.of(result.get(0));
         } else {
             return Optional.empty();
         }

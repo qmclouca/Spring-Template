@@ -11,6 +11,6 @@ public interface ClientService {
     List<Client> getAllClients();
     boolean deleteClient(String name);
     boolean deleteClient(Long id);
-    Optional<Client> getCLientByName(String name);
+    Optional<Client> getClientByName(String name);
     Client saveClient(Client client);
 }

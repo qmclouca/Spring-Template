@@ -29,7 +29,7 @@ public class ClientServiceImplementation implements ClientService {
         return clientRepository.findAll();
     }
 
-    public Optional<Client> getCLientByName(String name){
+    public Optional<Client> getClientByName(String name){
         return clientRepository.getClientByName(name);
     }
 

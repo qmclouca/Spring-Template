@@ -108,15 +108,15 @@ public class ClientController {
     }
 
     @PutMapping("/{name}")
-    public ResponseEntity<String> updateClientByName(@PathVariable String name, @RequestBody Client updatedClient) {
-        Optional<Client> client = clientService.getCLientByName(name);
+    public ResponseEntity<String> updateClientByName(@PathVariable String name, @RequestBody ClientDto updatedClientDto) {
+        Optional<Client> client = clientService.getClientByName(name);
 
         if (client.isPresent()) {
             Client existingClient = client.get();
-            existingClient.setName(updatedClient.getName());
-            existingClient.setBirthDate(updatedClient.getBirthDate());
-            existingClient.setMobile(updatedClient.getMobile());
-            existingClient.setEmail(updatedClient.getEmail());
+            existingClient.setName(updatedClientDto.getName());
+            existingClient.setBirthDate(updatedClientDto.getBirthDate());
+            existingClient.setMobile(updatedClientDto.getMobile());
+            existingClient.setEmail(updatedClientDto.getEmail());
 
             // Save the updated client
             clientService.saveClient(existingClient);
