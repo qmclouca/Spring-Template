@@ -11,10 +11,13 @@ import com.qmclouca.base.services.ClientService;
 import com.qmclouca.base.utils.annotations.DisableTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,12 +26,16 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ClientController.class)
 @AutoConfigureJsonTesters
 @ExtendWith(DisableTestExtension.class)
-public class ClientControllerTests {
+public class ClientControllerTests{
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,7 +43,7 @@ public class ClientControllerTests {
     @MockBean
     private ClientService clientService; // Assuming you have a ClientService to mock
 
-    @DisableTest(reason = "Testando novos testes")
+    //@DisableTest(reason = "Testando novos testes")
     @Test
     public void testSaveClient() throws Exception {
         // Prepare the input data for the request body
@@ -57,11 +64,6 @@ public class ClientControllerTests {
         clientDto.setEmail("john.doe@example.com");
         clientDto.setAddress(lstAddressDto);
 
-        // Mock the behavior of the clientService
-        // You should mock the necessary methods based on your test scenarios
-        // For example, you can use Mockito.when() and thenReturn() to mock the service behavior
-
-        // Perform the request and validate the response
         mockMvc.perform(MockMvcRequestBuilders.post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(clientDto))) // Convert the clientDto to JSON string
