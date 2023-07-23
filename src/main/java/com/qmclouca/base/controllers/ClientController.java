@@ -39,7 +39,8 @@ public class ClientController {
     public ResponseEntity<ClientDto> save(@RequestBody ClientDto postClientDto){
 
         Client clientRequest = modelMapper.map(postClientDto, Client.class);
-        if (clientService.getClientsByName(clientRequest.getName()) != null){
+
+        if (clientService.getClientsByName(postClientDto.getName()).size() != 0){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
