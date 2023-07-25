@@ -6,11 +6,13 @@ import com.qmclouca.base.Dtos.AddressDto;
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.configs.DisableTestExtension;
 import com.qmclouca.base.controllers.ClientController;
+import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
 import com.qmclouca.base.utils.annotations.DisableTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +66,9 @@ public class ClientControllerTests{
         clientDto.setMobile("1234567890");
         clientDto.setEmail("john.doe@example.com");
         clientDto.setAddress(lstAddressDto);
+
+        Client clientResponse = modelMapper.map(clientDto, Client.class);
+        Mockito.when(clientService.createClient(Mockito.any(Client.class))).thenReturn(clientResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -107,24 +113,71 @@ public class ClientControllerTests{
         // Add more assertions based on your response data and expected behavior
     }
 
-    @DisableTest(reason = "Testando novos testes")
     @Test
-    public void testGetClientsByName_NullOrEmptyName() throws Exception {
-        // Prepare the input name for the request path (null or empty)
-        String nullName = null;
-        String emptyName = "";
+    public void testGetAllClients() throws Exception {
+        // Prepare a list of clients to be returned by the mock clientService.getAllClients()
+        List<Client> lstClients = new ArrayList<>();
+        List<Address> lstAddress = new ArrayList<>();
+        Client client = new Client();
+        Address address = new Address();
 
-        // Perform the request and validate the response for null name
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/clients/" + nullName)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andExpect(MockMvcResultMatchers.content().string("Nenhum cliente encontrado com o nome fornecido"));
+        address.setCity("Cidade 1");
+        address.setState("Estado 1");
+        address.setNumber("1");
+        address.setStreet("rua 1");
+        address.setReferences("referencias 1");
+        address.setPostalCode("Postal code 1");
+        lstAddress.add(address);
+        address.setCity("Cidade 2");
+        address.setState("Estado 2");
+        address.setNumber("2");
+        address.setStreet("rua 2");
+        address.setReferences("referencias 2");
+        address.setPostalCode("Postal code 2");
+        lstAddress.add(address);
+        client.setAddress(lstAddress);
+        client.setName("John Doe");
+        client.setBirthDate(LocalDate.of(1990, 1, 15));
+        client.setMobile("1234567890");
+        client.setEmail("john.doe@example.com");
+        lstClients.add(client);
 
-        // Perform the request and validate the response for empty name
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/clients/" + emptyName)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andExpect(MockMvcResultMatchers.content().string("Nenhum cliente encontrado com o nome fornecido"));
+        address.setCity("Cidade 3");
+        address.setState("Estado 3");
+        address.setNumber("3");
+        address.setStreet("rua 3");
+        address.setReferences("referencias 3");
+        address.setPostalCode("Postal code 3");
+        lstAddress.add(address);
+
+        address.setCity("Cidade 4");
+        address.setState("Estado 4");
+        address.setNumber("4");
+        address.setStreet("rua 4");
+        address.setReferences("referencias 4");
+        address.setPostalCode("Postal code 4");
+        lstAddress.add(address);
+
+        client.setAddress(lstAddress);
+        client.setName("Abelardo Barbosa");
+        client.setBirthDate(LocalDate.of(1930, 1, 15));
+        client.setMobile("0987687654321");
+        client.setEmail("abelardo.barbosa@example.com");
+        lstClients.add(client);
+
+        // Mock the behavior of the clientService.getAllClients() method
+        Mockito.when(clientService.getAllClients()).thenReturn(lstClients);
+
+        // Perform the request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/clients"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("John Doe"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].birthDate").value("1990-01-15"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].mobile").value("1234567890"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("john.doe@example.com"));
+
+        // Add more assertions based on the expected behavior and response data
     }
 
     // Helper method to convert objects to JSON strings

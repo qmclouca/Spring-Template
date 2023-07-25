@@ -58,7 +58,7 @@ public class ClientController {
     @GetMapping("{name}")
     public ResponseEntity<String> getClientsByName(@PathVariable String name) {
         if (name == null || name.isEmpty()) {
-            return ResponseEntity.badRequest().body("O nome do cliente não pode ser nulo ou vazio");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O nome do cliente não pode ser nulo ou vazio");
         }
 
         List<Client> clients = clientService.getClientsByName(name);
