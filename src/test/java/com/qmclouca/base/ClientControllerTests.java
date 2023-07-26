@@ -119,6 +119,7 @@ public class ClientControllerTests{
         // Prepare a list of clients to be returned by the mock clientService.getAllClients()
         List<Client> lstClients = new ArrayList<>();
         List<Address> lstAddress = new ArrayList<>();
+
         Client client = new Client();
         Address address = new Address();
 
