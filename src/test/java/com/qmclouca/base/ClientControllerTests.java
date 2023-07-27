@@ -117,70 +117,90 @@ public class ClientControllerTests{
 
     @Test
     public void testGetAllClients() throws Exception {
-
         List<Client> lstClients = new ArrayList<>();
-        List<Address> lstAddress = new ArrayList<>();
-
+        List<Address> lstAddress1 = new ArrayList<>();
+        List<Address> lstAddress2 = new ArrayList<>();
         Client client1 = new Client();
         Client client2 = new Client();
         Address address1 = new Address();
         Address address2 = new Address();
         Address address3 = new Address();
         Address address4 = new Address();
-
         address1.setCity("Cidade 1");
         address1.setState("Estado 1");
         address1.setNumber("1");
         address1.setStreet("rua 1");
         address1.setReferences("referencias 1");
         address1.setPostalCode("Postal code 1");
-        lstAddress.add(address1);
+        lstAddress1.add(address1);
         address2.setCity("Cidade 2");
         address2.setState("Estado 2");
         address2.setNumber("2");
         address2.setStreet("rua 2");
         address2.setReferences("referencias 2");
         address2.setPostalCode("Postal code 2");
-        lstAddress.add(address2);
-        client1.setAddress(lstAddress);
+        lstAddress1.add(address2);
+        client1.setAddress(lstAddress1);
         client1.setName("John Doe");
         client1.setBirthDate(LocalDate.of(1990, 1, 15));
         client1.setMobile("1234567890");
         client1.setEmail("john.doe@example.com");
         lstClients.add(client1);
-
-        lstAddress.clear();
-
         address3.setCity("Cidade 3");
         address3.setState("Estado 3");
         address3.setNumber("3");
         address3.setStreet("rua 3");
         address3.setReferences("referencias 3");
         address3.setPostalCode("Postal code 3");
-        lstAddress.add(address3);
-
+        lstAddress2.add(address3);
         address4.setCity("Cidade 4");
         address4.setState("Estado 4");
         address4.setNumber("4");
         address4.setStreet("rua 4");
         address4.setReferences("referencias 4");
         address4.setPostalCode("Postal code 4");
-        lstAddress.add(address4);
-
-        client2.setAddress(lstAddress);
+        lstAddress2.add(address4);
+        client2.setAddress(lstAddress2);
         client2.setName("Abelardo Barbosa");
         client2.setBirthDate(LocalDate.of(1930, 1, 15));
         client2.setMobile("0987687654321");
         client2.setEmail("abelardo.barbosa@example.com");
         lstClients.add(client2);
-
         Mockito.when(clientService.getAllClients()).thenReturn(lstClients);
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/clients"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("John Doe"))
-                //.andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].city").value("Cidade 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].birthDate").value("1990-01-15"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].mobile").value("1234567890"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("john.doe@example.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].city").value("Cidade 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].street").value("rua 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].state").value("Estado 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].postalCode").value("Postal code 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].number").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[0].references").value("referencias 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].city").value("Cidade 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].street").value("rua 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].state").value("Estado 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].postalCode").value("Postal code 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].number").value("2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].address[1].references").value("referencias 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Abelardo Barbosa"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].birthDate").value("1930-01-15"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].mobile").value("0987687654321"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].email").value("abelardo.barbosa@example.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].city").value("Cidade 3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].street").value("rua 3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].state").value("Estado 3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].postalCode").value("Postal code 3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].number").value("3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[0].references").value("referencias 3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].city").value("Cidade 4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].street").value("rua 4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].state").value("Estado 4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].postalCode").value("Postal code 4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].number").value("4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].address[1].references").value("referencias 4"))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
         System.out.println("Response Content: " + result.getResponse().getContentAsString());
