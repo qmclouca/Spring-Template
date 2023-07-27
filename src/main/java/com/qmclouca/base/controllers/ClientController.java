@@ -2,6 +2,7 @@ package com.qmclouca.base.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmclouca.base.Dtos.AddressDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -129,9 +130,12 @@ public class ClientController {
     }
 
     private ClientDto convertToDto(Client client) {
-        ClientDto clientDto = new ClientDto();
-        clientDto.setId(client.getId());
-        clientDto.setName(client.getName());
+        ClientDto clientDto = modelMapper.map(client, ClientDto.class);
+
+        List<AddressDto> addressDtos = client.getAddress().stream()
+                .map(address -> modelMapper.map(address, AddressDto.class))
+                .collect(Collectors.toList());
+        clientDto.setAddress(addressDtos);
         return clientDto;
     }
 }
