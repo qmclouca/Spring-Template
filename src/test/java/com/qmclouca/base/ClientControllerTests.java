@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ public class ClientControllerTests{
     @MockBean
     private ClientService clientService; // Assuming you have a ClientService to mock
 
-    //@DisableTest(reason = "Testando novos testes")
+    //@DisableTest(reason = "Novos testes")
     @Test
     public void testSaveClient() throws Exception {
         // Prepare the input data for the request body
@@ -205,6 +206,56 @@ public class ClientControllerTests{
                 .andReturn();
         System.out.println("Response Content: " + result.getResponse().getContentAsString());
     }
+
+    @Test
+    public void testDeleteClientByName() throws Exception {
+        // Mock the clientService.deleteClient method to return true
+        Mockito.when(clientService.deleteClient(Mockito.anyString())).thenReturn(true);
+
+        // Perform the DELETE request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/clients/deleteByName/{name}", "John Doe"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    public void testDeleteClientById() throws Exception {
+        // Mock the clientService.deleteClient method to return true
+        Mockito.when(clientService.deleteClient(Mockito.anyLong())).thenReturn(true);
+
+        // Perform the DELETE request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/clients/deleteById/{id}", 1L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    public void testUpdateClientByName() throws Exception {
+        // Prepare the input data for the request body (updated client)
+        ClientDto updatedClientDto = new ClientDto();
+        updatedClientDto.setName("Updated John Doe");
+        updatedClientDto.setBirthDate(LocalDate.of(1995, 5, 20));
+        updatedClientDto.setMobile("9876543210");
+        updatedClientDto.setEmail("updated.john.doe@example.com");
+
+        // Mock the clientService.getClientByName method to return an Optional with the existing client
+        Client existingClient = new Client();
+        existingClient.setName("John Doe");
+        existingClient.setBirthDate(LocalDate.of(1990, 1, 15));
+        existingClient.setMobile("1234567890");
+        existingClient.setEmail("john.doe@example.com");
+        Mockito.when(clientService.getClientByName(Mockito.anyString())).thenReturn(Optional.of(existingClient));
+
+        // Perform the PUT request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/clients/{name}", "John Doe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(updatedClientDto))) // Convert the updatedClientDto to JSON string
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Client updated successfully"));
+
+        // Add more assertions based on your response data and expected behavior
+    }
+
 
     private static String asJsonString(Object obj) {
         try {
