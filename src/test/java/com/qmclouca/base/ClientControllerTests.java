@@ -9,7 +9,6 @@ import com.qmclouca.base.controllers.ClientController;
 import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
-import com.qmclouca.base.utils.annotations.DisableTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -17,9 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -46,9 +44,9 @@ public class ClientControllerTests{
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientService clientService; // Assuming you have a ClientService to mock
+    private ClientService clientService;
 
-    //@DisableTest(reason = "Testando novos testes")
+    //@DisableTest(reason = "Novos testes")
     @Test
     public void testSaveClient() throws Exception {
         // Prepare the input data for the request body
@@ -77,43 +75,33 @@ public class ClientControllerTests{
                         .content(asJsonString(clientDto))) // Convert the clientDto to JSON string
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("John Doe"));
-        // Add more assertions based on your response data and expected behavior
     }
 
     @Test
     public void testGetClientsByName_ExistingName() throws Exception {
-        // Prepare the input name for the request path
+
         String name = "John Doe";
 
-        // Mock the behavior of the clientService
-        // Return a list of mock clients for the given name
         List<Client> mockClients = Collections.singletonList(new Client());
         when(clientService.getClientsByName(name)).thenReturn(mockClients);
 
-        // Perform the request and validate the response
         mockMvc.perform(MockMvcRequestBuilders.get("/api/clients/" + name)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("[{}]")); // Expecting a JSON array with one object
-        // Add more assertions based on your response data and expected behavior
+                .andExpect(MockMvcResultMatchers.content().json("[{}]"));
     }
 
     @Test
     public void testGetClientsByName_NonExistingName() throws Exception {
-        // Prepare the input name for the request path
         String name = "NonExistingName";
 
-        // Mock the behavior of the clientService
-        // Return an empty list to simulate that no client with the given name exists
         when(clientService.getClientsByName(name)).thenReturn(Collections.emptyList());
 
-        // Perform the request and validate the response
         mockMvc.perform(MockMvcRequestBuilders.get("/api/clients/" + name)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().string("Nenhum cliente encontrado com o nome fornecido"));
-        // Add more assertions based on your response data and expected behavior
-    }
+     }
 
     @Test
     public void testGetAllClients() throws Exception {
@@ -205,6 +193,47 @@ public class ClientControllerTests{
                 .andReturn();
         System.out.println("Response Content: " + result.getResponse().getContentAsString());
     }
+
+    @Test
+    public void testDeleteClientByName() throws Exception {
+        Mockito.when(clientService.deleteClient(Mockito.anyString())).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/clients/deleteByName/{name}", "John Doe"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    public void testDeleteClientById() throws Exception {
+        Mockito.when(clientService.deleteClient(Mockito.anyLong())).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/clients/deleteById/{id}", 1L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    public void testUpdateClientByName() throws Exception {
+        ClientDto updatedClientDto = new ClientDto();
+        updatedClientDto.setName("Updated John Doe");
+        updatedClientDto.setBirthDate(LocalDate.of(1995, 5, 20));
+        updatedClientDto.setMobile("9876543210");
+        updatedClientDto.setEmail("updated.john.doe@example.com");
+
+        Client existingClient = new Client();
+        existingClient.setName("John Doe");
+        existingClient.setBirthDate(LocalDate.of(1990, 1, 15));
+        existingClient.setMobile("1234567890");
+        existingClient.setEmail("john.doe@example.com");
+        Mockito.when(clientService.getClientByName(Mockito.anyString())).thenReturn(Optional.of(existingClient));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/clients/{name}", "John Doe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(updatedClientDto))) // Convert the updatedClientDto to JSON string
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Client updated successfully"));
+    }
+
 
     private static String asJsonString(Object obj) {
         try {
