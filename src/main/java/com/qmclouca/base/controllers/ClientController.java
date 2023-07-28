@@ -120,7 +120,6 @@ public class ClientController {
             existingClient.setMobile(updatedClientDto.getMobile());
             existingClient.setEmail(updatedClientDto.getEmail());
 
-            // Save the updated client
             clientService.saveClient(existingClient);
 
             return ResponseEntity.ok("Client updated successfully");
