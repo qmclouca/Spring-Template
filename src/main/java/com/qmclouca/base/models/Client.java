@@ -1,10 +1,6 @@
 package com.qmclouca.base.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,6 +10,10 @@ import java.util.List;
 @Entity
 public class Client extends BaseEntity{
 
+    @Column
+    private String userName;
+    @Column
+    private String password;
     @Column
     private String name;
     @Column
