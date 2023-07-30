@@ -11,7 +11,7 @@ import java.util.List;
 public class Client extends BaseEntity{
 
     @Column
-    private String userName;
+    private String clientName;
     @Column
     private String password;
     @Column

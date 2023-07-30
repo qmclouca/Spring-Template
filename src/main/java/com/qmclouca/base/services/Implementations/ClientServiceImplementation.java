@@ -3,6 +3,7 @@ package com.qmclouca.base.services.Implementations;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.repositories.ClientRepository;
 import com.qmclouca.base.services.ClientService;
+import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -54,5 +55,13 @@ public class ClientServiceImplementation implements ClientService {
 
     public Client saveClient(Client client){
         return clientRepository.save(client);
+    }
+    @Override
+    public Optional<Client> getClientByNameAndPassword(String name, String password) throws NoResultException {
+        Optional<Client> client = clientRepository.findByClientNameAndPassword(name, password);
+        if(client == null){
+            throw new NoResultException("Nome de usuário ou senha incorreta.");
+        }
+        return client;
     }
 }

@@ -5,7 +5,6 @@ import com.qmclouca.base.utils.JwtGenerator.JwtGeneratorInterface;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class JwtGeneratorImpl implements JwtGeneratorInterface{
     @Override
     public Map<String, String> generateToken(Client client) {
         String jwtToken="";
-        jwtToken = Jwts.builder().setSubject(client.getUserName()).setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "secret").compact();
+        jwtToken = Jwts.builder().setSubject(client.getClientName()).setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "secret").compact();
         Map<String, String> jwtTokenGen = new HashMap<>();
         jwtTokenGen.put("token", jwtToken);
         jwtTokenGen.put("message", message);

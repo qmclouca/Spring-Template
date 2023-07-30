@@ -57,7 +57,7 @@ public class ClientRepositoryImplementation implements ClientRepository {
     }
 
     @Override
-    public Optional<Client> findByUserNameAndPassword(String userName, String password) {
+    public Optional<Client> findByClientNameAndPassword(String userName, String password) {
         String query = "SELECT c FROM Client c WHERE c.userName = :userName AND c.password = :password"; // Use 'c.id' instead of 'c.client_id'
         TypedQuery<Client> typedQuery = entityManager.createQuery(query, Client.class)
                 .setParameter("userName", userName)
