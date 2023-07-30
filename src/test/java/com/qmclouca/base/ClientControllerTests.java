@@ -1,10 +1,12 @@
 package com.qmclouca.base;
 
+import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.qmclouca.base.Dtos.AddressDto;
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.configs.DisableTestExtension;
+import com.qmclouca.base.configs.TestLogAppender;
 import com.qmclouca.base.controllers.ClientController;
 import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ClientController.class)
@@ -45,6 +48,8 @@ public class ClientControllerTests{
 
     @MockBean
     private ClientService clientService;
+    private Logger logger = (Logger) LoggerFactory.getLogger(ClientController.class);
+
 
     //@DisableTest(reason = "Novos testes")
     @Test
@@ -75,6 +80,24 @@ public class ClientControllerTests{
                         .content(asJsonString(clientDto))) // Convert the clientDto to JSON string
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("John Doe"));
+    }
+
+    @Test
+    public void testSomeMethodThatLogs() {
+        // Perform some actions that will trigger logging in the application
+        logger.info("This is an info log");
+        logger.error("This is an error log");
+
+        // Get the custom appender and retrieve the captured logs
+        TestLogAppender testAppender = (TestLogAppender) logger.getAppender("TEST");
+        List<String> logs = testAppender.getLogs();
+
+        // Assert that the logs contain the expected log messages
+        assertEquals(2, logs.size());
+        assertEquals("INFO", logs.get(0).substring(24, 28)); // Log level
+        assertEquals("This is an info log", logs.get(0).substring(30)); // Log message
+        assertEquals("ERROR", logs.get(1).substring(24, 29)); // Log level
+        assertEquals("This is an error log", logs.get(1).substring(31)); // Log message
     }
 
     @Test
