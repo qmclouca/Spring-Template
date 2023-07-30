@@ -1,6 +1,5 @@
 package com.qmclouca.base.Dtos;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
