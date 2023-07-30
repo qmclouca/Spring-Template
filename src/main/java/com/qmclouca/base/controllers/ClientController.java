@@ -3,6 +3,8 @@ package com.qmclouca.base.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmclouca.base.Dtos.AddressDto;
+import com.qmclouca.base.utils.JwtGenerator.JwtGeneratorInterface;
+import jakarta.persistence.NoResultException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +30,32 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    private JwtGeneratorInterface jwtGenerator;
+
     @Autowired
     private ObjectMapper objectMapper;
 
-    public ClientController(ClientService clientService){
+    @Autowired
+    public ClientController(ClientService clientService, JwtGeneratorInterface jwtGenerator){
         super();
         this.clientService = clientService;
+        this.jwtGenerator = jwtGenerator;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginClient(@RequestBody Client client) {
+        try {
+            if(client.getClientName() == null || client.getPassword() == null) {
+                throw new NoResultException("UserName or Password is Empty");
+            }
+            Optional<Client> clientData = clientService.getClientByNameAndPassword(client.getClientName(), client.getPassword());
+            if(clientData.isEmpty()){
+                throw new NoResultException("UserName or Password is Invalid");
+            }
+            return new ResponseEntity<>(jwtGenerator.generateToken(client), HttpStatus.OK);
+        } catch (NoResultException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping
