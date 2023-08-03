@@ -18,6 +18,15 @@ public class ClientServiceImplementation implements ClientService {
     }
 
     @Override
+    public Optional<Client> getClientByNameAndPassword(String name, String password) throws NoResultException {
+        Optional<Client> client = clientRepository.findByClientNameAndPassword(name, password);
+        if(client.isPresent()){
+            throw new NoResultException("Usuário ou senha inválidos.");
+        }
+        return client;
+    }
+
+    @Override
     public Client createClient(Client client) {
         return clientRepository.save(client);
     }
@@ -56,12 +65,5 @@ public class ClientServiceImplementation implements ClientService {
     public Client saveClient(Client client){
         return clientRepository.save(client);
     }
-    @Override
-    public Optional<Client> getClientByNameAndPassword(String name, String password) throws NoResultException {
-        Optional<Client> client = clientRepository.findByClientNameAndPassword(name, password);
-        if(client == null){
-            throw new NoResultException("Nome de usuário ou senha incorreta.");
-        }
-        return client;
-    }
+
 }
