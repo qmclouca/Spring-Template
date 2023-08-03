@@ -7,4 +7,5 @@ public class ProductDto extends BaseEntityDto {
     private String unity;
     private String model;
     private String minQuantity;
+    private String physicalState;
 }

@@ -3,10 +3,12 @@ package com.qmclouca.base.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Product  extends BaseEntity{
+public class Product extends BaseEntity{
 
     @Column
     private Double price;
@@ -20,4 +22,6 @@ public class Product  extends BaseEntity{
     private String model;
     @Column
     private String minQuantity;
+    @Column
+    private String physicalState;
 }
