@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class Product extends BaseEntity{
-
     @Column
     private Double price;
     @Column
