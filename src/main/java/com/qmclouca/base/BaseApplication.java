@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {
 		"com.qmclouca.base.models",
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 		"com.qmclouca.base.services.Implementations",
 		"com.qmclouca.base.utils.JwtGenerator.Implementations"
 })
+@EnableJpaRepositories
 public class BaseApplication {
 	@Bean
 	public ModelMapper modelMapper() { return new ModelMapper(); }

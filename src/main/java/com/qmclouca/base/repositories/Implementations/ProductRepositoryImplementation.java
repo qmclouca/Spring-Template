@@ -1,7 +1,11 @@
 package com.qmclouca.base.repositories.Implementations;
 
+import com.qmclouca.base.models.Client;
 import com.qmclouca.base.models.Product;
 import com.qmclouca.base.repositories.ProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,8 @@ import java.util.function.Function;
 
 public class ProductRepositoryImplementation implements ProductRepository {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void flush() {
@@ -163,5 +169,18 @@ public class ProductRepositoryImplementation implements ProductRepository {
     @Override
     public Page<Product> findAll(Pageable pageable) {
         return null;
+    }
+
+    public Optional<Product> findByNameContainingIgnoreCase(String name) {
+        String query = "SELECT c FROM Client c WHERE LOWER(c.name) = LOWER(:name)";
+        List<Product> result = entityManager.createQuery(query, Product.class)
+                    .setParameter("name", name)
+                    .setMaxResults(1)
+                    .getResultList();
+        if (result != null){
+           return Optional.of(result.get(0));
+        } else {
+           return Optional.empty();
+        }
     }
 }
