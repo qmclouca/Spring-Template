@@ -29,14 +29,22 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto postProductDto){
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto postProductDto) {
         Product productRequest = modelMapper.map(postProductDto, Product.class);
 
-        if (productService.getProductsByName(postProductDto.getName()).isPresent()){
+        if (productService.getProductsByName(postProductDto.getName()).isPresent()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
+        Product product = productService.CreateProduct(productRequest);
 
+        ProductDto postProductResponse = modelMapper.map(product, ProductDto.class);
+
+        if (postProductResponse != null){
+            return ResponseEntity.ok(postProductResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping
