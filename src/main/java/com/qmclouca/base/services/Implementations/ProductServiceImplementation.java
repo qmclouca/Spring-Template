@@ -2,14 +2,12 @@ package com.qmclouca.base.services.Implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmclouca.base.Dtos.ProductDto;
-import com.qmclouca.base.models.Client;
 import com.qmclouca.base.models.Product;
 import com.qmclouca.base.repositories.ProductRepository;
 import com.qmclouca.base.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +21,7 @@ public class ProductServiceImplementation implements ProductService {
         this.productRepository = productRepository;
     }
 
-    public void CreateProduct(ProductDto productDto) {
+    public Product CreateProduct(Product productDto) {
         Product product = new Product();
         product.setPrice(productDto.getPrice());
         product.setName(productDto.getName());
@@ -33,6 +31,7 @@ public class ProductServiceImplementation implements ProductService {
         product.setMinQuantity(productDto.getMinQuantity());
         product.setPhysicalState(productDto.getPhysicalState());
         productRepository.save(product);
+        return product;
     }
 
     public Optional<ProductDto> getProductsByName(String name) {
