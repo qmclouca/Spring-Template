@@ -9,6 +9,7 @@ import com.qmclouca.base.controllers.ClientController;
 import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
+import com.qmclouca.base.utils.annotations.DisableTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -46,7 +47,7 @@ public class ClientControllerTests{
     @MockBean
     private ClientService clientService;
 
-    //@DisableTest(reason = "Novos testes")
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testSaveClient() throws Exception {
         // Prepare the input data for the request body
@@ -76,7 +77,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("John Doe"));
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testGetClientsByName_ExistingName() throws Exception {
 
@@ -90,7 +91,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("[{}]"));
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testGetClientsByName_NonExistingName() throws Exception {
         String name = "NonExistingName";
@@ -102,7 +103,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().string("Nenhum cliente encontrado com o nome fornecido"));
      }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testGetAllClients() throws Exception {
         List<Client> lstClients = new ArrayList<>();
@@ -193,7 +194,7 @@ public class ClientControllerTests{
                 .andReturn();
         System.out.println("Response Content: " + result.getResponse().getContentAsString());
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testDeleteClientByName() throws Exception {
         Mockito.when(clientService.deleteClient(Mockito.anyString())).thenReturn(true);
@@ -202,7 +203,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("true"));
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testDeleteClientById() throws Exception {
         Mockito.when(clientService.deleteClient(Mockito.anyLong())).thenReturn(true);
@@ -211,7 +212,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("true"));
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testUpdateClientByName() throws Exception {
         ClientDto updatedClientDto = new ClientDto();

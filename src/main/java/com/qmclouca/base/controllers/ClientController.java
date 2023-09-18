@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmclouca.base.Dtos.AddressDto;
 import com.qmclouca.base.utils.JwtGenerator.JwtGeneratorInterface;
+import com.qmclouca.base.utils.annotations.Development;
 import jakarta.persistence.NoResultException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +61,7 @@ public class ClientController {
         }
     }
 
+    @Development
     @PostMapping
     public ResponseEntity<ClientDto> save(@RequestBody ClientDto postClientDto){
 
