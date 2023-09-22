@@ -8,24 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public ProductController(ProductService productService){
-        super();
+    public ProductController(ProductService productService, ModelMapper modelMapper){
         this.productService = productService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
@@ -48,7 +46,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDto> getAllProducts(){
-        return productService.GetAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts(){
+        List<ProductDto> products = productService.GetAllProducts();
+        return ResponseEntity.ok(products);
     }
 }
