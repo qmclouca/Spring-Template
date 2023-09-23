@@ -8,9 +8,9 @@ import com.qmclouca.base.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -46,9 +46,23 @@ public class ProductServiceImplementation implements ProductService {
 
     @Override
     public List<ProductDto> GetAllProducts() {
-        return productRepository.findAll().stream()
-                .map(ProductDto::new)
-                .collect(Collectors.toList());
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> lstProductDto = new ArrayList<>();
+        for(Product p: products){
+            ProductDto productDto = new ProductDto();
+            productDto.setId(p.getId());
+            productDto.setCreatedAt(p.getCreatedAt());
+            productDto.setModifiedAt(p.getModifiedAt());
+            productDto.setName(p.getName());
+            productDto.setCategory(p.getCategory());
+            productDto.setPrice(p.getPrice());
+            productDto.setModel(p.getModel());
+            productDto.setUnity(p.getUnity());
+            productDto.setMinQuantity(p.getMinQuantity());
+            productDto.setPhysicalState(p.getPhysicalState());
+            lstProductDto.add(productDto);
+        }
+        return lstProductDto;
     }
 
     private ProductDto mapToDto(Product product) {
