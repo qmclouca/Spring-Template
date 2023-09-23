@@ -2,6 +2,7 @@ package com.qmclouca.base.services.Implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmclouca.base.Dtos.ProductDto;
+import com.qmclouca.base.models.Client;
 import com.qmclouca.base.models.Product;
 import com.qmclouca.base.repositories.ProductRepository;
 import com.qmclouca.base.services.ProductService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -34,14 +36,45 @@ public class ProductServiceImplementation implements ProductService {
         return product;
     }
 
-    public Optional<ProductDto> getProductsByName(String name) {
-        Optional<Product> product = productRepository.findByNameContainingIgnoreCase(name);
+    public Optional<List<ProductDto>> GetProductsByName(String name) {
+        Optional<List<Product>> productList = productRepository.findAllByNameContainingIgnoreCase(name);
 
-        if (product.isEmpty()){
+        if (productList.isEmpty()){
             return Optional.empty();
         }
-        ProductDto productDto = mapToDto(product.get());
-        return Optional.of(productDto);
+
+        List<ProductDto> lstProductDto = productList.get().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
+        return Optional.of(lstProductDto);
+    }
+
+    @Override
+    public boolean deleteProductByName(String name) {
+        Optional<List<Product>> lstProductOpt = productRepository.findAllByNameContainingIgnoreCase(name);
+        if (lstProductOpt.isPresent()) {
+            List<Product> lstProduct = lstProductOpt.get();
+            for (Product p : lstProduct) {
+                if (p.getName().equals(name)) {
+                    productRepository.delete(p);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteProductById(Long id) {
+        Optional<Product> product = productRepository.findById(Math.toIntExact(id));
+        if (product.isPresent()){
+            productRepository.delete(product.orElse(new Product()));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -49,18 +82,7 @@ public class ProductServiceImplementation implements ProductService {
         List<Product> products = productRepository.findAll();
         List<ProductDto> lstProductDto = new ArrayList<>();
         for(Product p: products){
-            ProductDto productDto = new ProductDto();
-            productDto.setId(p.getId());
-            productDto.setCreatedAt(p.getCreatedAt());
-            productDto.setModifiedAt(p.getModifiedAt());
-            productDto.setName(p.getName());
-            productDto.setCategory(p.getCategory());
-            productDto.setPrice(p.getPrice());
-            productDto.setModel(p.getModel());
-            productDto.setUnity(p.getUnity());
-            productDto.setMinQuantity(p.getMinQuantity());
-            productDto.setPhysicalState(p.getPhysicalState());
-            lstProductDto.add(productDto);
+            lstProductDto.add(mapToDto(p));
         }
         return lstProductDto;
     }
@@ -68,6 +90,8 @@ public class ProductServiceImplementation implements ProductService {
     private ProductDto mapToDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
+        productDto.setCreatedAt(product.getCreatedAt());
+        productDto.setModifiedAt(product.getModifiedAt());
         productDto.setName(product.getName());
         productDto.setPrice(product.getPrice());
         productDto.setCategory(product.getCategory());

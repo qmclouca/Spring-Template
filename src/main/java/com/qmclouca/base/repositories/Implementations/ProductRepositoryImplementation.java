@@ -12,14 +12,14 @@ public abstract class ProductRepositoryImplementation {
 
     @PersistenceContext
     private EntityManager entityManager;
-    public Optional<Product> findByNameContainingIgnoreCase(String name) {
-        String query = "SELECT c FROM Client c WHERE LOWER(c.name) = LOWER(:name)";
+
+    public Optional<List<Product>> findAllByNameContainingIgnoreCase(String name){
+        String query = "SELECT p FROM Product p WHERE LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')";
         List<Product> result = entityManager.createQuery(query, Product.class)
                     .setParameter("name", name)
-                    .setMaxResults(1)
                     .getResultList();
         if (result != null){
-           return Optional.of(result.get(0));
+           return Optional.of(result);
         } else {
            return Optional.empty();
         }
