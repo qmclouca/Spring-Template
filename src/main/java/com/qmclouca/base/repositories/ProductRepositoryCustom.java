@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ProductRepositoryCustom {
     Optional<List<Product>> findAllByNameContainingIgnoreCase(String name);
+    Optional<Product> findById (Long id);
 }
