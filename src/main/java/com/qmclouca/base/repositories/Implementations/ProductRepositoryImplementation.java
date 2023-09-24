@@ -1,5 +1,6 @@
 package com.qmclouca.base.repositories.Implementations;
 
+import com.qmclouca.base.controllers.ProductController;
 import com.qmclouca.base.models.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,6 +23,18 @@ public abstract class ProductRepositoryImplementation {
            return Optional.of(result);
         } else {
            return Optional.empty();
+        }
+    }
+
+    public Optional<Product> findById (Long id){
+        String query = "SELECT p FROM Product p WHERE p.id = id";
+        Product result = entityManager.createQuery(query, Product.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        if (result != null){
+            return Optional.of(result);
+        } else {
+            return Optional.empty();
         }
     }
 }

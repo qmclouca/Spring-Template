@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,11 +28,11 @@ public class ProductController {
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto postProductDto) {
         Product productRequest = modelMapper.map(postProductDto, Product.class);
 
-        if (productService.GetProductsByName(postProductDto.getName()).isPresent()) {
+        if (productService.getProductsByName(postProductDto.getName()).isPresent()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        Product product = productService.CreateProduct(productRequest);
+        Product product = productService.createProduct(productRequest);
 
         ProductDto postProductResponse = modelMapper.map(product, ProductDto.class);
 
@@ -43,13 +45,13 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts(){
-        List<ProductDto> products = productService.GetAllProducts();
+        List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("{name}")
     public ResponseEntity<List<ProductDto>> getProductsByName(@PathVariable String name) {
-        Optional<List<ProductDto>> productsOpt = productService.GetProductsByName(name);
+        Optional<List<ProductDto>> productsOpt = productService.getProductsByName(name);
 
         if (!productsOpt.isPresent() || productsOpt.get().isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -65,8 +67,21 @@ public class ProductController {
     }
 
     @DeleteMapping("deleteById/{id}")
-    public ResponseEntity<Boolean> deleteProducById(@PathVariable Long id){
+    public ResponseEntity<Boolean> deleteProductById(@PathVariable Long id){
         boolean isDeleted = productService.deleteProductById(id);
         return ResponseEntity.ok(isDeleted);
+    }
+
+    @PutMapping("putById/{id}")
+    public ResponseEntity<?> putProductById(@PathVariable Long id, @RequestBody ProductDto productToChange){
+        ProductDto actualProduct = productService.getProductById(id);
+        if (actualProduct == null){
+            return ResponseEntity.notFound().build();
+        }
+        if (actualProduct.equals(productToChange)){
+            return ResponseEntity.badRequest().body("O produto fornecido já existe no banco de dados.");
+        }
+        Optional<ProductDto> response = productService.putProductById(productToChange);
+        return ResponseEntity.ok(response);
     }
 }
