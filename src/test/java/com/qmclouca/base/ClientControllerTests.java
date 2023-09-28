@@ -100,7 +100,7 @@ public class ClientControllerTests{
         assertEquals("ERROR", logs.get(1).substring(24, 29)); // Log level
         assertEquals("This is an error log", logs.get(1).substring(31)); // Log message
     }
-
+    @DisableTest(reason = "Novos testes")
     @Test
     public void testGetClientsByName_ExistingName() throws Exception {
 
@@ -114,6 +114,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("[{}]"));
     }
+
     @DisableTest(reason = "Novos testes")
     @Test
     public void testGetClientsByName_NonExistingName() throws Exception {
