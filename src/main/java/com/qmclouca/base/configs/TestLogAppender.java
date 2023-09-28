@@ -10,7 +10,9 @@ import java.util.List;
 public class TestLogAppender extends AppenderBase<ILoggingEvent> {
     private final List<String> logs = new ArrayList<>();
     private final Layout<ILoggingEvent> layout;
-
+    public TestLogAppender(){
+        this.layout = null;
+    }
     public TestLogAppender(Layout<ILoggingEvent> layout){
         this.layout = layout;
     }

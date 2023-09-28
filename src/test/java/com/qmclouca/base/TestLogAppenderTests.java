@@ -7,11 +7,11 @@ import ch.qos.logback.core.Layout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestLogAppender extends AppenderBase<ILoggingEvent> {
+public class TestLogAppenderTests extends AppenderBase<ILoggingEvent> {
     private final List<String> logs = new ArrayList<>();
     private final Layout<ILoggingEvent> layout;
 
-    public TestLogAppender(Layout<ILoggingEvent> layout){
+    public TestLogAppenderTests(Layout<ILoggingEvent> layout){
         this.layout = layout;
     }
 

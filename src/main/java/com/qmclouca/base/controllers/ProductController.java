@@ -27,11 +27,10 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto postProductDto) {
         Product productRequest = modelMapper.map(postProductDto, Product.class);
-
-        if (productService.getProductsByName(postProductDto.getName()).isPresent()) {
+        Optional<List<ProductDto>> lsProductsWithSameName = productService.getProductsByName(productRequest.getName());
+        if (lsProductsWithSameName.isPresent() && !lsProductsWithSameName.get().isEmpty()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
         Product product = productService.createProduct(productRequest);
 
         ProductDto postProductResponse = modelMapper.map(product, ProductDto.class);
