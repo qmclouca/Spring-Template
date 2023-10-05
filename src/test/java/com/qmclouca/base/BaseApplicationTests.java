@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BaseApplicationTests {
 
-	@DisableTest(reason = "Novos testes")
 	@Test
 	void contextLoads() {
 	}
