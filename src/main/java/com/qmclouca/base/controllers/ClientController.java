@@ -45,23 +45,23 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @PostMapping("/login/{clientName}/{clientPassword}")
-    public ResponseEntity<?> loginClient(@PathVariable String clientName, String clientPassword) {
-        try {
-            if(clientName == null || clientPassword == null) {
-                throw new NoResultException("UserName or Password is Empty");
-            }
-            Optional<Client> clientData = clientService.getClientByNameAndPassword(clientName, clientPassword);
-            if(clientData.isEmpty()){
-                throw new NoResultException("UserName or Password is Invalid");
-            }
-            Client toGetSecurity = clientData.get();
-            return new ResponseEntity<>(jwtGenerator.generateToken(toGetSecurity), HttpStatus.OK);
-
-        } catch (NoResultException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
-    }
+//    @PostMapping("/login/{clientName}/{clientPassword}")
+//    public ResponseEntity<?> loginClient(@PathVariable String clientName, String clientPassword) {
+//        try {
+//            if(clientName == null || clientPassword == null) {
+//                throw new NoResultException("UserName or Password is Empty");
+//            }
+//            Optional<Client> clientData = clientService.getClientByNameAndPassword(clientName, clientPassword);
+//            if(clientData.isEmpty()){
+//                throw new NoResultException("UserName or Password is Invalid");
+//            }
+//            Client toGetSecurity = clientData.get();
+//            return new ResponseEntity<>(jwtGenerator.generateToken(toGetSecurity), HttpStatus.OK);
+//
+//        } catch (NoResultException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+//        }
+//    }
 
     @Development
     @PostMapping
