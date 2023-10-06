@@ -3,9 +3,11 @@ package com.qmclouca.base.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmclouca.base.Dtos.AddressDto;
+import com.qmclouca.base.utils.JwtGenerator.JwtGenerator;
 import com.qmclouca.base.utils.JwtGenerator.JwtGeneratorInterface;
 import com.qmclouca.base.utils.annotations.Development;
 import jakarta.persistence.NoResultException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +31,10 @@ public class ClientController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private final ClientService clientService;
-
+    @Autowired
     private JwtGeneratorInterface jwtGenerator;
+
+    private final ClientService clientService;
 
     @Autowired
     private ObjectMapper objectMapper;
