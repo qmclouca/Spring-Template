@@ -6,30 +6,23 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.qmclouca.base.Dtos.AddressDto;
 import com.qmclouca.base.Dtos.ClientDto;
 import com.qmclouca.base.configs.DisableTestExtension;
-import com.qmclouca.base.configs.JpaConfig;
 import com.qmclouca.base.configs.TestLogAppender;
 import com.qmclouca.base.controllers.ClientController;
 import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
-import com.qmclouca.base.repositories.ClientRepository;
 import com.qmclouca.base.services.ClientService;
 import com.qmclouca.base.utils.annotations.DisableTest;
-import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -41,15 +34,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-
 @WebMvcTest(ClientController.class)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = {BaseApplication.class, TestDataSourceConfig.class})
-@TestPropertySource(properties = "spring.sql.init.mode=always")
-//@ExtendWith(DisableTestExtension.class)
+@AutoConfigureJsonTesters
+@ExtendWith(DisableTestExtension.class)
 public class ClientControllerTests{
 
     @Autowired
@@ -63,11 +53,32 @@ public class ClientControllerTests{
 
     @MockBean
     private ClientService clientService;
+
+    @MockBean
+    private JwtGenerator jwtGenerator;
+
+
+
     private Logger logger = (Logger) LoggerFactory.getLogger(ClientController.class);
     @Qualifier("clientRepository")
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Test
+    public void testGenerateJwtToken() throws Exception {
+        // Mock the behavior of clientService or any other dependencies as needed
+
+        // Create a sample client for testing
+        Client client = new Client();
+        client.setId(1L); // Set client ID or any other relevant data
+
+        // Generate the JWT token using the JwtGenerator
+        Map<String, String> tokenResponse = jwtGenerator.generateToken(client);
+
+        // Assert that the tokenResponse contains a token
+        assertNotNull(tokenResponse.get("token"));
+    }
 
     //@DisableTest(reason = "Novos testes")
     @Test
