@@ -12,9 +12,9 @@ import jakarta.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories("com.qmclouca.base.repositories")
+//@EnableJpaRepositories("com.qmclouca.base.repositories")
 public class JpaConfig {
-    @Bean (name = "entityManagerFactory")
+    @Bean(name = "entityManagerFactory")
     public EntityManagerFactory entityManagerFactoryBean(DataSource dataSource){
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);

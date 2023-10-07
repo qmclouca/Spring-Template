@@ -11,9 +11,7 @@ import com.qmclouca.base.controllers.ClientController;
 import com.qmclouca.base.models.Address;
 import com.qmclouca.base.models.Client;
 import com.qmclouca.base.services.ClientService;
-import com.qmclouca.base.utils.JwtGenerator.JwtGenerator;
 import com.qmclouca.base.utils.annotations.DisableTest;
-import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -31,10 +29,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ClientController.class)
@@ -49,6 +49,9 @@ public class ClientControllerTests{
     private MockMvc mockMvc;
 
     @MockBean
+    private EntityManagerFactory entityManagerFactory;
+
+    @MockBean
     private ClientService clientService;
 
     @MockBean
@@ -57,7 +60,10 @@ public class ClientControllerTests{
 
 
     private Logger logger = (Logger) LoggerFactory.getLogger(ClientController.class);
+    @Qualifier("clientRepository")
 
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Test
     public void testGenerateJwtToken() throws Exception {
@@ -104,7 +110,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("John Doe"));
     }
-    @DisableTest(reason = "Novos testes")
+
     @Test
     public void testSomeMethodThatLogs() {
         // Perform some actions that will trigger logging in the application
@@ -122,7 +128,7 @@ public class ClientControllerTests{
         assertEquals("ERROR", logs.get(1).substring(24, 29)); // Log level
         assertEquals("This is an error log", logs.get(1).substring(31)); // Log message
     }
-    @DisableTest(reason = "Novos testes")
+
     @Test
     public void testGetClientsByName_ExistingName() throws Exception {
 
@@ -137,7 +143,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.content().json("[{}]"));
     }
 
-    //@DisableTest(reason = "Novos testes")
+
     @Test
     public void testGetClientsByName_NonExistingName() throws Exception {
         String name = "NonExistingName";
@@ -149,7 +155,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().string("Nenhum cliente encontrado com o nome fornecido"));
      }
-    //@DisableTest(reason = "Novos testes")
+
     @Test
     public void testGetAllClients() throws Exception {
         List<Client> lstClients = new ArrayList<>();
@@ -240,7 +246,7 @@ public class ClientControllerTests{
                 .andReturn();
         System.out.println("Response Content: " + result.getResponse().getContentAsString());
     }
-    //@DisableTest(reason = "Novos testes")
+
     @Test
     public void testDeleteClientByName() throws Exception {
         Mockito.when(clientService.deleteClient(Mockito.anyString())).thenReturn(true);
@@ -249,7 +255,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("true"));
     }
-    //@DisableTest(reason = "Novos testes")
+
     @Test
     public void testDeleteClientById() throws Exception {
         Mockito.when(clientService.deleteClient(Mockito.anyLong())).thenReturn(true);
@@ -258,7 +264,7 @@ public class ClientControllerTests{
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("true"));
     }
-    //@DisableTest(reason = "Novos testes")
+
     @Test
     public void testUpdateClientByName() throws Exception {
         ClientDto updatedClientDto = new ClientDto();
